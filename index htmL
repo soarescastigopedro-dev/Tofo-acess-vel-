@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tofo Acessível</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-align: center;
+      padding: 50px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 { font-size: 2.5em; margin-bottom: 15px; }
+    p { font-size: 1.2em; margin-bottom: 30px; opacity: 0.9; }
+    .btn-whatsapp {
+      display: inline-block;
+      background: #25D366;
+      color: white;
+      padding: 18px 35px;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tofo Acessível</h1>
+  <p>Fale conosco direto no WhatsApp</p>
+  <a href="https://wa.me/258865246054" class="btn-whatsapp">📱 Falar no WhatsApp</a>
+</body>
+</html>
