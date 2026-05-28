@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Feed Público</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #f0f2f5; }
+  header { background: #1877f2; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
+  .container { max-width: 600px; margin: 20px auto; padding: 0 10px; }
+  .post-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  input, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+  textarea { resize: none; height: 80px; }
+  button { background: #1877f2; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+  button:hover { background: #166fe5; }
+  .post { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  .post b { color: #1877f2; }
+  .post small { color: gray; font-size: 12px; }
+  .loading { text-align: center; color: gray; padding: 20px; }
+</style>
+</head>
+<body>
+
+<header>Meu Feed Público</header>
+
+<div class="container">
+  <div class="post-box">
+    <input id="nome" placeholder="Seu nome">
+    <textarea id="mensagem" placeholder="O que você está pensando?"></textarea>
+    <button onclick="postar()">Publicar</button>
+  </div>
+
+  <div id="feed">
+    <div class="loading">Carregando posts...</div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js'
+
+// TROCA ESSAS 2 LINHAS PELOS TEUS DADOS DO SUPABASE
+const supabaseUrl = 'COLE_SEU_URL_AQUI'
+const supabaseKey = 'COLE_SUA_CHAVE_ANON_AQUI'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+window.postar = async () => {
+  const nome = document.getElementById('nome').value || 'Anônimo'
+  const mensagem = document.getElementById('mensagem').value.trim()
+  if (!mensagem) return alert('Escreve algo antes de publicar!')
+  
+  await supabase.from('posts').insert([{ nome, mensagem }])
+  document.getElementById('mensagem').value = ''
+  carregarPosts()
+}
+
+async function carregarPosts() {
+  const { data, error } = await supabase.from('posts').select('*').order('created_at', { ascending: false })
+  if (error) {
+    document.getElementById('feed').innerHTML = '<div class="loading">Erro ao carregar. Verifica se criaste a tabela no Supabase.</div>'
+    return
+  }
+  
+  if (data.length === 0) {
+    document.getElementById('feed').innerHTML = '<div class="loading">Ainda não há posts. Sê o primeiro!</div>'
+    return
+  }
+  
+  document.getElementById('feed').innerHTML = data.map(p => `
+    <div class="post">
+      <b>${p.nome}</b><br>
+      ${p.mensagem}<br>
+      <small>${new Date(p.created_at).toLocaleString('pt-BR')}</small>
+    </div>
+  `).join('')
+}
+
+carregarPosts()
+</script>
+
+</body>
+</html>
